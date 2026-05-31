@@ -3,7 +3,7 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { useApp } from "@/lib/context/AppContext"
-import { ClipboardText, Heart, ArrowLeft, CheckCircle } from "lucide-react"
+import { ArrowLeft, CheckCircle } from "lucide-react"
 
 // Exact duplicate menu matrix to sync up string names and numeric calculations character-for-character
 const ramenIngredientsLookup = [
@@ -16,8 +16,8 @@ const ramenIngredientsLookup = [
   { name: "Topokki", price: 5 },
   { name: "Beef Slices", price: 7 },
   { name: "Chicken", price: 6 },
-  { id: "i10", name: "Juicy Porkchops", price: 8 },
-  { id: "i11", name: "Luncheon Meat", price: 5 },
+  { name: "Juicy Porkchops", price: 8 },
+  { name: "Luncheon Meat", price: 5 },
 ]
 
 export default function Screen5_Invoice() {
@@ -44,22 +44,26 @@ export default function Screen5_Invoice() {
   const grandTotalKisses = activeRamenIngredients.reduce((sum, item) => sum + item.itemTotal, 0)
 
   return (
-    <div className="min-h-screen w-full bg-[#110d16] text-slate-100 p-4 md:p-8 pt-28 pb-32 relative overflow-y-auto">
-      <div className="max-w-2xl mx-auto z-10 relative">
+    <div className="min-h-screen w-full bg-[#160d15] text-slate-100 p-4 md:p-8 pt-28 pb-32 relative overflow-y-auto">
+      <div className="max-w-6xl mx-auto z-10 relative">
         
         {/* Header Block */}
-        <div className="text-center mb-8 flex flex-col items-center">
-          <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-pink-400 to-amber-300 bg-clip-text text-transparent mb-2">
+        <div className="text-center mb-10 px-16 md:px-8 flex flex-col items-center">
+          <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-pink-400 to-rose-300 bg-clip-text text-transparent mb-3">
             Our Date Ledger 🧾
           </h1>
-          <p className="text-zinc-400 text-xs md:text-sm font-medium">
+          <p className="text-zinc-400 text-sm md:text-base font-medium mb-4">
             Review our synchronized agenda before locking in the reservations
           </p>
+          {/* 🎀 RESTORED: Your original billing header GIF */}
+          <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-2xl">
+            <img src="/billing-header.gif" alt="Billing Header" className="w-full h-full object-contain" />
+          </div>
         </div>
 
-        {/* Core Invoice Summary Card */}
-        <div className="bg-[#1a1422] border border-zinc-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden space-y-6">
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-pink-50 to-amber-400" />
+        {/* Core Invoice Summary Card - Restored Styling matching image_6d5618.png */}
+        <div className="max-w-3xl mx-auto bg-[#1c121b] border border-zinc-800 rounded-3xl p-6 text-left shadow-xl relative overflow-hidden space-y-6">
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-pink-400 to-rose-300" />
 
           {/* Customer profile banner row */}
           <div className="flex justify-between items-center border-b border-zinc-800/80 pb-4 text-xs font-bold text-zinc-400">
@@ -74,13 +78,13 @@ export default function Screen5_Invoice() {
           </div>
 
           {/* SECTION 1: WATCHLIST ENTERTAINMENT SELECTIONS */}
-          <div className="text-left space-y-2">
-            <h3 className="text-xs font-black uppercase text-pink-400 tracking-wider">1. Showtime Selections</h3>
+          <div className="space-y-2">
+            <h3 className="text-sm font-black uppercase text-pink-400 tracking-wider">1. Showtime Selections</h3>
             
             {selectedMovies.length === 0 && selectedSeries.length === 0 && !customMovieSuggestion ? (
               <p className="text-sm font-medium text-zinc-500 italic pl-3">No movies or series picked yet...</p>
             ) : (
-              <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-3 space-y-2 text-sm font-semibold text-zinc-300">
+              <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-2 text-sm font-semibold text-zinc-300">
                 {[...selectedMovies, ...selectedSeries].map((title, idx) => (
                   <div key={idx} className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-pink-500" />
@@ -88,7 +92,7 @@ export default function Screen5_Invoice() {
                   </div>
                 ))}
                 {customMovieSuggestion && (
-                  <div className="pt-1.5 border-t border-zinc-800/60 mt-1 text-xs text-zinc-400 italic font-medium">
+                  <div className="pt-2 border-t border-zinc-800/60 mt-1 text-xs text-zinc-400 italic font-medium">
                     <span className="text-pink-400 font-bold not-italic">Extra note:</span> "{customMovieSuggestion}"
                   </div>
                 )}
@@ -97,13 +101,13 @@ export default function Screen5_Invoice() {
           </div>
 
           {/* SECTION 2: HOTPOT INGREDIENT RENDERING MATRIX */}
-          <div className="text-left space-y-2">
-            <h3 className="text-xs font-black uppercase text-amber-400 tracking-wider">2. Hotpot Recipe Basket</h3>
+          <div className="space-y-2">
+            <h3 className="text-sm font-black uppercase text-amber-400 tracking-wider">2. Hotpot Recipe Basket</h3>
             
             {activeRamenIngredients.length === 0 ? (
               <p className="text-sm font-medium text-zinc-500 italic pl-3">Your recipe basket is currently empty...</p>
             ) : (
-              <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-3 space-y-3">
+              <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-3">
                 {activeRamenIngredients.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center text-sm font-bold">
                     <div className="flex items-center gap-2 text-zinc-300">
@@ -125,13 +129,14 @@ export default function Screen5_Invoice() {
           </div>
 
           {/* FINAL TOTAL INVOICE BLOCK DECK */}
-          <div className="pt-4 border-t-2 border-dashed border-zinc-800 flex justify-between items-center">
+          <div className="pt-4 border-t border-dashed border-zinc-800 flex justify-between items-center">
             <div>
-              <p className="text-xs font-black uppercase text-zinc-400 tracking-wider">Grand Date Total</p>
+              <p className="text-sm font-black uppercase text-zinc-400 tracking-wider">Grand Date Total</p>
               <p className="text-[10px] font-medium text-zinc-500 mt-0.5">Non-refundable romantic value assessment</p>
             </div>
+            {/* Styled precisely to match image_6d5618.png button footprint format */}
             <div className="flex items-center gap-1 bg-pink-500/10 border border-pink-500/20 px-4 py-2 rounded-2xl">
-              <span className="text-xl md:text-2xl font-black text-pink-400">{grandTotalKisses}</span>
+              <span className="text-xl font-black text-pink-400">{grandTotalKisses}</span>
               <span className="text-sm font-extrabold text-pink-300">Kisses 💋</span>
             </div>
           </div>
@@ -139,17 +144,17 @@ export default function Screen5_Invoice() {
         </div>
 
         {/* BOTTOM ACTION BUTTON CONTROLS ARRAY CONTAINER */}
-        <div className="flex gap-3 max-w-xl mx-auto mt-8 items-center justify-center">
+        <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-[#160d15] via-[#160d15]/90 to-transparent pt-6 pb-6 px-4 flex justify-center gap-3 z-30">
           <button
             onClick={() => goToScreen(4)}
-            className="flex items-center gap-1.5 bg-zinc-800/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 px-6 py-4 rounded-full font-bold text-sm transition-all shadow-md cursor-pointer border border-zinc-700/50"
+            className="w-32 bg-zinc-800/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 py-4 rounded-full font-bold text-base transition-all shadow-md cursor-pointer border border-zinc-700/50 flex items-center justify-center gap-1.5"
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           
           <button
             onClick={() => goToScreen(6)}
-            className="flex-grow bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:opacity-95 text-white font-black py-4 rounded-full shadow-xl text-base transition-all tracking-wide cursor-pointer flex items-center justify-center gap-2"
+            className="w-full max-w-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 font-bold py-4 rounded-full shadow-xl text-white text-base transition-all tracking-wide cursor-pointer flex items-center justify-center gap-2"
           >
             Lock In Date Arrangement <CheckCircle className="w-5 h-5 fill-white/10" />
           </button>
