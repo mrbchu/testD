@@ -41,6 +41,14 @@ export default function DatePlannerApp() {
     e.preventDefault()
     if (!localName.trim()) return
     setState({ userName: localName.trim() })
+    
+    // 🎵 BULLETPROOF AUDIO TRIGGER: Forces the local file to drop directly on this click event thread
+    if (audioRef.current) {
+      audioRef.current.play().catch((err) => {
+        console.log("Audio pipeline bypass initialized safely:", err)
+      })
+    }
+
     goToScreen(1)
   }
 
