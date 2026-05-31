@@ -10,7 +10,7 @@ const moviesData = [
   { id: "m2", title: "Steal My Heart", src: "/stealmyheart.jpg", trailer: "https://www.youtube.com/embed/ujzXXaqAvLo?si=x18M8iBWeseDzsVa" },
   { id: "m3", title: "Sweet & Sour", src: "/sweetsour.jpg", trailer: "https://www.youtube.com/embed/hZORUEZd_pg?si=A7CDj3yEyEqIT0WV" },
   { id: "m4", title: "Mood Of The Day", src: "/moodoftheday.jpg", trailer: "https://www.youtube.com/embed/v_yA_KNTVCs?si=3BcqqH44OobOsPsl" },
-  { id: "m5", title: "LittleForest", src: "/littleforest.jpg", trailer: "https://www.youtube.com/embed/3sVJPHbzabM?si=086FHm1a92rYzkab" },
+  { id: "m5", title: "Little Forest", src: "/littleforest.jpg", trailer: "https://www.youtube.com/embed/3sVJPHbzabM?si=086FHm1a92rYzkab" },
 ]
 
 const seriesData = [
@@ -18,7 +18,7 @@ const seriesData = [
   { id: "s2", title: "Genie, Make a Wish", src: "/geniemakeawish.jpg", trailer: "https://www.youtube.com/embed/PaZIDBqhVSk?si=h4XCrWRHNjYT7FTk" },
   { id: "s3", title: "My Demon", src: "/mydemon.jpg", trailer: "https://www.youtube.com/embed/D-bAfFqvxZg?si=aMS4pUNTMRf_RUhQ" },
   { id: "s4", title: "Perfect Crown", src: "/perfectcrown.jpg", trailer: "https://www.youtube.com/embed/AGh-CwbKMlM?si=Rmp3Fc04E3x58DXT" },
-  { id: "s5", title: "Queen OF Tears", src: "/queenoftears.jpg", trailer: "https://www.youtube.com/embed/Gg2D8zrzlOA?si=U9V8ql5AlTxbBbT2" },
+  { id: "s5", title: "Queen of Tears", src: "/queenoftears.jpg", trailer: "https://www.youtube.com/embed/Gg2D8zrzlOA?si=U9V8ql5AlTxbBbT2" },
 ]
 
 export default function Screen3_MediaSelector() {
@@ -47,12 +47,12 @@ export default function Screen3_MediaSelector() {
 
   const openTrailer = (url: string) => {
     setActiveTrailer(url)
-    setState({ isTrailerPlaying: true }) // ⏸️ Signals background audio engine to pause
+    setState({ isTrailerPlaying: true })
   }
 
   const closeTrailer = () => {
     setActiveTrailer(null)
-    setState({ isTrailerPlaying: false }) // ▶️ Signals background audio engine to resume
+    setState({ isTrailerPlaying: false })
   }
 
   return (
@@ -132,7 +132,7 @@ export default function Screen3_MediaSelector() {
           </div>
         </div>
 
-        {/* 🍿 NEW: MOVIE SUGGESTION BOX */}
+        {/* 🍿 MOVIE SUGGESTION BOX */}
         <div className="bg-[#1c121b] border border-zinc-800 rounded-3xl p-6 mb-12 max-w-2xl mx-auto text-left shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <Pencil className="w-4 h-4 text-pink-400" />
