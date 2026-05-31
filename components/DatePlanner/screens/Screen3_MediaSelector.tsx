@@ -6,19 +6,19 @@ import { useApp } from "@/lib/context/AppContext"
 import { Film, Tv, CheckCircle2, Play, X, Pencil } from "lucide-react"
 
 const moviesData = [
-  { id: "m1", title: "Love Reset", src: "/lovereset.jpg", trailer: "https://www.youtube.com/embed/vFseJg1WeMk?si=wQtBt6SocLlyySRb" },
-  { id: "m2", title: "Steal My Heart", src: "/stealmyheart.jpg", trailer: "https://www.youtube.com/embed/ujzXXaqAvLo?si=x18M8iBWeseDzsVa" },
+  { id: "m1", title: "Love Reset", src: "/LoveReset.jpg", trailer: "https://www.youtube.com/embed/vFseJg1WeMk?si=wQtBt6SocLlyySRb" },
+  { id: "m2", title: "Steal My Heart", src: "/StealMyHeart.jpg", trailer: "https://www.youtube.com/embed/ujzXXaqAvLo?si=x18M8iBWeseDzsVa" },
   { id: "m3", title: "Sweet & Sour", src: "/sweetsour.jpg", trailer: "https://www.youtube.com/embed/hZORUEZd_pg?si=A7CDj3yEyEqIT0WV" },
-  { id: "m4", title: "Mood Of The Day", src: "/moodoftheday.jpg", trailer: "https://www.youtube.com/embed/v_yA_KNTVCs?si=3BcqqH44OobOsPsl" },
-  { id: "m5", title: "Little Forest", src: "/littleforest.jpg", trailer: "https://www.youtube.com/embed/3sVJPHbzabM?si=086FHm1a92rYzkab" },
+  { id: "m4", title: "Mood Of The Day", src: "/MoodOfTheDay.jpg", trailer: "https://www.youtube.com/embed/v_yA_KNTVCs?si=3BcqqH44OobOsPsl" },
+  { id: "m5", title: "Little Forest", src: "/LettleForest.jpg", trailer: "https://www.youtube.com/embed/3sVJPHbzabM?si=086FHm1a92rYzkab" },
 ]
 
 const seriesData = [
-  { id: "s1", title: "My Dearest Nemesis", src: "/mydearestnemesis.jpg", trailer: "https://www.youtube.com/embed/dh-N9QEdzHs?si=E8tKHr7Bpu2pGop7" },
-  { id: "s2", title: "Genie, Make a Wish", src: "/geniemakeawish.jpg", trailer: "https://www.youtube.com/embed/PaZIDBqhVSk?si=h4XCrWRHNjYT7FTk" },
-  { id: "s3", title: "My Demon", src: "/mydemon.jpg", trailer: "https://www.youtube.com/embed/D-bAfFqvxZg?si=aMS4pUNTMRf_RUhQ" },
-  { id: "s4", title: "Perfect Crown", src: "/perfectcrown.jpg", trailer: "https://www.youtube.com/embed/AGh-CwbKMlM?si=Rmp3Fc04E3x58DXT" },
-  { id: "s5", title: "Queen of Tears", src: "/queenoftears.jpg", trailer: "https://www.youtube.com/embed/Gg2D8zrzlOA?si=U9V8ql5AlTxbBbT2" },
+  { id: "s1", title: "My Dearest Nemesis", src: "/MyDearestNemesis.jpg", trailer: "https://www.youtube.com/embed/dh-N9QEdzHs?si=E8tKHr7Bpu2pGop7" },
+  { id: "s2", title: "Genie, Make a Wish", src: "/GenieMakeaWish.jpg", trailer: "https://www.youtube.com/embed/PaZIDBqhVSk?si=h4XCrWRHNjYT7FTk" },
+  { id: "s3", title: "My Demon", src: "/MyDemon.jpg", trailer: "https://www.youtube.com/embed/D-bAfFqvxZg?si=aMS4pUNTMRf_RUhQ" },
+  { id: "s4", title: "Perfect Crown", src: "/PerfectCrown.jpg", trailer: "https://www.youtube.com/embed/AGh-CwbKMlM?si=Rmp3Fc04E3x58DXT" },
+  { id: "s5", title: "Queen of Tears", src: "/QueenOFTears.jpg", trailer: "https://www.youtube.com/embed/Gg2D8zrzlOA?si=U9V8ql5AlTxbBbT2" },
 ]
 
 export default function Screen3_MediaSelector() {
