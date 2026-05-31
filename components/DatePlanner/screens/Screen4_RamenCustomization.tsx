@@ -19,10 +19,10 @@ const ramenIngredients = [
   { id: "i7", name: "Topokki", src: "/topokki.jpg", type: "Topping", price: 5 Kisses },
   
   // 🥩 MEATS & PROTEINS
-  { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein", price: 7 },
-  { id: "i9", name: "Chicken", src: "/chicken.jpg", type: "Meat / Protein", price: 6 },
-  { id: "i10", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein", price: 8 },
-  { id: "i11", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Luncheon Meat", price: 5 },
+  { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein", price: 7 Kisses },
+  { id: "i9", name: "Chicken", src: "/chicken.jpg", type: "Meat / Protein", price: 6 Kisses },
+  { id: "i10", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein", price: 8 Kisses },
+  { id: "i11", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Luncheon Meat", price: 5 Kisses },
 ]
 
 export default function Screen4_RamenCustomization() {
