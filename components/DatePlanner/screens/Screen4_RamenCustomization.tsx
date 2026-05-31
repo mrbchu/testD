@@ -10,19 +10,22 @@ const ramenIngredients = [
   // 🍜 RAMEN BASES
   { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base" },
   { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base" },
+  { id: "i3", name: "Cheese Slice", src: "/cheese_ramen.jpg", type: "Topping" },
   
   // 🥩 MEATS & PROTEINS
-  { id: "i3", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
-  { id: "i4", name: "Tender Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
-  { id: "i5", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
-  { id: "i6", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
+  { id: "i4", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
+  { id: "i5", name: "Tender Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
+  { id: "i6", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
+  { id: "i7", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
   
   // 🧀 TOPPINGS & SIDES
-  { id: "i7", name: "Cheese Slice", src: "/cheese_ramen.jpg", type: "Topping" },
+ 
   { id: "i8", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping" },
   { id: "i9", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping" },
-  { id: "i10", name: "Shabu Meatballs", src: "/shabu_balls.jpg", type: "Topping" },
+  { id: "i10", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping" },
+  { id: "i11", name: "Topokki", src: "/topokki.jpg", type: "Topping" },
 ]
+
 
 export default function Screen4_RamenCustomization() {
   const { state, setState, goToScreen } = useApp()
