@@ -5,7 +5,6 @@ import { motion } from "framer-motion"
 import { useApp } from "@/lib/context/AppContext"
 import { ArrowLeft, CheckCircle } from "lucide-react"
 
-// Exact duplicate menu matrix to sync up string names and numeric calculations character-for-character
 const ramenIngredientsLookup = [
   { name: "Plain Ramen Base", price: 5 },
   { name: "Spicy Ramen Base", price: 8 },
@@ -23,7 +22,6 @@ const ramenIngredientsLookup = [
 export default function Screen5_Invoice() {
   const { state, setState, goToScreen } = useApp()
 
-  // Gracefully fallback values to prevent system layout crashing
   const selectedMovies = state.selectedMovies || []
   const selectedSeries = state.selectedSeries || []
   const selectedRamenItems = state.selectedRamenItems || {}
@@ -31,7 +29,7 @@ export default function Screen5_Invoice() {
   const customRamenSuggestion = state.customRamenSuggestion || ""
   const userName = state.userName || "Princess"
 
-  // 1. Compile the active chosen components from state array records
+  // Compile active ingredients and calculate totals
   const activeRamenIngredients = ramenIngredientsLookup
     .filter(item => (selectedRamenItems[item.name] || 0) > 0)
     .map(item => ({
@@ -40,7 +38,6 @@ export default function Screen5_Invoice() {
       itemTotal: (selectedRamenItems[item.name] || 0) * item.price
     }))
 
-  // 2. Perform math reduction loop to figure out final kiss tally
   const grandTotalKisses = activeRamenIngredients.reduce((sum, item) => sum + item.itemTotal, 0)
 
   return (
@@ -55,17 +52,16 @@ export default function Screen5_Invoice() {
           <p className="text-zinc-400 text-sm md:text-base font-medium mb-4">
             Review our synchronized agenda before locking in the reservations
           </p>
-          {/* 🎀 RESTORED: Your original billing header GIF */}
           <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-2xl">
             <img src="/billing-header.gif" alt="Billing Header" className="w-full h-full object-contain" />
           </div>
         </div>
 
-        {/* Core Invoice Summary Card - Restored Styling matching image_6d5618.png */}
+        {/* Core Invoice Card Layout */}
         <div className="max-w-3xl mx-auto bg-[#1c121b] border border-zinc-800 rounded-3xl p-6 text-left shadow-xl relative overflow-hidden space-y-6">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-pink-400 to-rose-300" />
 
-          {/* Customer profile banner row */}
+          {/* Profile Row */}
           <div className="flex justify-between items-center border-b border-zinc-800/80 pb-4 text-xs font-bold text-zinc-400">
             <div>
               <p className="uppercase tracking-wider text-[10px] text-pink-400">Reservation For</p>
@@ -77,38 +73,39 @@ export default function Screen5_Invoice() {
             </div>
           </div>
 
-          {/* SECTION 1: WATCHLIST ENTERTAINMENT SELECTIONS */}
+          {/* 🍿 1. SHOWTIME SELECTIONS */}
           <div className="space-y-2">
             <h3 className="text-sm font-black uppercase text-pink-400 tracking-wider">1. Showtime Selections</h3>
-            
-            {selectedMovies.length === 0 && selectedSeries.length === 0 && !customMovieSuggestion ? (
-              <p className="text-sm font-medium text-zinc-500 italic pl-3">No movies or series picked yet...</p>
-            ) : (
-              <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-2 text-sm font-semibold text-zinc-300">
-                {[...selectedMovies, ...selectedSeries].map((title, idx) => (
+            <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-2 text-sm font-semibold text-zinc-300">
+              {selectedMovies.length === 0 && selectedSeries.length === 0 ? (
+                <p className="text-zinc-500 italic font-medium">No shows selected yet...</p>
+              ) : (
+                [...selectedMovies, ...selectedSeries].map((title, idx) => (
                   <div key={idx} className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-pink-500" />
                     <span>{title}</span>
                   </div>
-                ))}
-                {customMovieSuggestion && (
-                  <div className="pt-2 border-t border-zinc-800/60 mt-1 text-xs text-zinc-400 italic font-medium">
-                    <span className="text-pink-400 font-bold not-italic">Extra note:</span> "{customMovieSuggestion}"
-                  </div>
-                )}
-              </div>
-            )}
+                ))
+              )}
+              
+              {/* 🎀 RESTORED: Anything Else My Princess */}
+              {customMovieSuggestion && (
+                <div className="pt-2 border-t border-zinc-800/40 mt-2">
+                  <p className="text-[11px] font-black uppercase text-pink-300 tracking-wider">Anything else my princess:</p>
+                  <p className="text-xs text-zinc-400 italic font-medium mt-0.5">"{customMovieSuggestion}"</p>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* SECTION 2: HOTPOT INGREDIENT RENDERING MATRIX */}
+          {/* 🍲 2. HOTPOT RECIPE BASKET */}
           <div className="space-y-2">
             <h3 className="text-sm font-black uppercase text-amber-400 tracking-wider">2. Hotpot Recipe Basket</h3>
-            
-            {activeRamenIngredients.length === 0 ? (
-              <p className="text-sm font-medium text-zinc-500 italic pl-3">Your recipe basket is currently empty...</p>
-            ) : (
-              <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-3">
-                {activeRamenIngredients.map((item, idx) => (
+            <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-3">
+              {activeRamenIngredients.length === 0 ? (
+                <p className="text-sm font-medium text-zinc-500 italic">Your recipe basket is currently empty...</p>
+              ) : (
+                activeRamenIngredients.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center text-sm font-bold">
                     <div className="flex items-center gap-2 text-zinc-300">
                       <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
@@ -117,24 +114,49 @@ export default function Screen5_Invoice() {
                     </div>
                     <span className="text-pink-400 text-xs font-black">{item.itemTotal} Kisses</span>
                   </div>
-                ))}
-                
-                {customRamenSuggestion && (
-                  <div className="pt-2 border-t border-zinc-800/60 mt-1 text-xs text-zinc-400 italic font-medium">
-                    <span className="text-amber-400 font-bold not-italic">Extra adjustments:</span> "{customRamenSuggestion}"
-                  </div>
-                )}
-              </div>
-            )}
+                ))
+              )}
+
+              {customRamenSuggestion && (
+                <div className="pt-2 border-t border-zinc-800/40 mt-2">
+                  <p className="text-[11px] font-black uppercase text-amber-300 tracking-wider">Extra recipe requests & drinks:</p>
+                  <p className="text-xs text-zinc-400 italic font-medium mt-0.5">"{customRamenSuggestion}"</p>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* FINAL TOTAL INVOICE BLOCK DECK */}
+          {/* ⚠️ RESTORED: TIPS & WARNING SECTIONS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-zinc-800/60">
+            <div className="bg-zinc-900/30 border border-zinc-800/40 rounded-xl p-3 text-xs">
+              <span className="font-bold text-amber-400">💡 Pro-Tip for Date Night:</span>
+              <p className="text-zinc-400 mt-0.5 font-medium leading-relaxed">
+                Make sure the cozy blankets are ready and the phone is on Do Not Disturb mode before launching the watch party streams!
+              </p>
+            </div>
+            <div className="bg-rose-500/5 border border-rose-500/10 rounded-xl p-3 text-xs">
+              <span className="font-bold text-rose-400">⚠️ Mandatory Warning:</span>
+              <p className="text-zinc-400 mt-0.5 font-medium leading-relaxed">
+                Prices calculated here represent strict physical debt requirements. No skipping out on the kiss tolls at the door!
+              </p>
+            </div>
+          </div>
+
+          {/* 💳 RESTORED: PREVIOUS PAYMENTS / HISTORICAL ACCOUNT DATA */}
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-3.5 text-xs space-y-1">
+            <p className="font-bold text-zinc-400 uppercase tracking-wider text-[10px]">Previous Transactions & Historical Records</p>
+            <div className="flex justify-between text-zinc-500 font-semibold pt-1 text-[11px]">
+              <span>Last Active Arrangement Status:</span>
+              <span className="text-emerald-500/90 font-bold">Paid & Fulfilled Successfully ✓</span>
+            </div>
+          </div>
+
+          {/* GRAND TOTAL ROW */}
           <div className="pt-4 border-t border-dashed border-zinc-800 flex justify-between items-center">
             <div>
               <p className="text-sm font-black uppercase text-zinc-400 tracking-wider">Grand Date Total</p>
               <p className="text-[10px] font-medium text-zinc-500 mt-0.5">Non-refundable romantic value assessment</p>
             </div>
-            {/* Styled precisely to match image_6d5618.png button footprint format */}
             <div className="flex items-center gap-1 bg-pink-500/10 border border-pink-500/20 px-4 py-2 rounded-2xl">
               <span className="text-xl font-black text-pink-400">{grandTotalKisses}</span>
               <span className="text-sm font-extrabold text-pink-300">Kisses 💋</span>
@@ -143,7 +165,7 @@ export default function Screen5_Invoice() {
 
         </div>
 
-        {/* BOTTOM ACTION BUTTON CONTROLS ARRAY CONTAINER */}
+        {/* BOTTOM NAVIGATION ACTIONS */}
         <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-[#160d15] via-[#160d15]/90 to-transparent pt-6 pb-6 px-4 flex justify-center gap-3 z-30">
           <button
             onClick={() => goToScreen(4)}
