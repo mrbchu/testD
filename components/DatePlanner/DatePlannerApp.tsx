@@ -20,6 +20,11 @@ export default function DatePlannerApp() {
   const [localName, setLocalName] = useState("")
   const [showSidebar, setShowSidebar] = useState(false)
 
+  // 🚀 Auto-scroll window to top instantly on every screen change
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+  }, [state.currentScreen])
+
   // Sync background looping audio track based on active panels
   useEffect(() => {
     const audio = audioRef.current
