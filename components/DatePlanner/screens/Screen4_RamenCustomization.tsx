@@ -8,15 +8,15 @@ import { Soup, Plus, Minus, CheckCircle, Pencil, Heart } from "lucide-react"
 // Complete menu with pricing calculations set in kisses 💋
 const ramenIngredients = [
   // 🍜 RAMEN BASES
-  { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base", price: 5 },
-  { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base", price: 8 },
-  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Ramen Base", price: 10 },
+  { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base", price: 5 Kisses },
+  { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base", price: 8 Kisses },
+  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Ramen Base", price: 10 Kisses },
 
   // 🧀 TOPPINGS & SIDES
-  { id: "i4", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping", price: 2 },
-  { id: "i5", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping", price: 3 },
-  { id: "i6", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping", price: 4 },
-  { id: "i7", name: "Topokki", src: "/topokki.jpg", type: "Topping", price: 5 },
+  { id: "i4", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping", price: 2 Kisses },
+  { id: "i5", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping", price: 3 Kisses },
+  { id: "i6", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping", price: 4 Kisses },
+  { id: "i7", name: "Topokki", src: "/topokki.jpg", type: "Topping", price: 5 Kisses },
   
   // 🥩 MEATS & PROTEINS
   { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein", price: 7 },
