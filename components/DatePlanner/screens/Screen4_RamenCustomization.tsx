@@ -10,20 +10,20 @@ const ramenIngredients = [
   // 🍜 RAMEN BASES
   { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base" },
   { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base" },
-  { id: "i3", name: "Cheese Slice", src: "/cheese_ramen.jpg", type: "Topping" },
+  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Topping" },
+
+  // 🧀 TOPPINGS & SIDES
+  { id: "i4", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping" },
+  { id: "i5", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping" },
+  { id: "i6", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping" },
+  { id: "i7", name: "Topokki", src: "/topokki.jpg", type: "Topping" },
   
   // 🥩 MEATS & PROTEINS
-  { id: "i4", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
-  { id: "i5", name: "Tender Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
-  { id: "i6", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
-  { id: "i7", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
+  { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
+  { id: "i9", name: "Tender Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
+  { id: "i10", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
+  { id: "i11", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
   
-  // 🧀 TOPPINGS & SIDES
- 
-  { id: "i8", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping" },
-  { id: "i9", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping" },
-  { id: "i10", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping" },
-  { id: "i11", name: "Topokki", src: "/topokki.jpg", type: "Topping" },
 ]
 
 
