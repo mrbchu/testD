@@ -1,34 +1,49 @@
 import { AppState } from './context/AppContext';
 
-// Local poster and ingredient configurations mapping to your custom public assets
+// 🎬 Synced flawlessly to look up media posters
 const mediaPosters: Record<string, string> = {
-  "Love Reset": "/lovereset.jpg",
-  "Be With You": "/bewithyou.jpg",
+  "Love Reset": "/LoveReset.jpg",
+  "Steal My Heart": "/StealMyHeart.jpg",
   "Sweet & Sour": "/sweetsour.jpg",
-  "Mood Of The Day": "/moodoftheday.jpg",
-  "Little Forest": "/littleforest.jpg",
-  "My Dearest Nemesis": "/mydearestnemesis.jpg",
-  "Genie, Make a Wish": "/geniemakeawish.jpg",
-  "My Demon": "/mydemon.jpg",
-  "Perfect Crown": "/perfectcrown.jpg",
-  "My Roommate Is a Gumiho": "/myroommateisagumiho.jpg",
+  "Mood Of The Day": "/MoodOfTheDay.jpg",
+  "Little Forest": "/LettleForest.jpg",
+  "My Dearest Nemesis": "/MyDearestNemesis.jpg",
+  "Genie, Make a Wish": "/GenieMakeaWish.jpg",
+  "My Demon": "/MyDemon.jpg",
+  "Perfect Crown": "/PerfectCrown.jpg",
+  "Queen of Tears": "/QueenOFTears.jpg",
 };
 
+// 🍲 FIXED: Synced keys character-for-character to match Screen 4 state tracking names perfectly
 const ramenImages: Record<string, string> = {
-  "Spicy Ramen": "/spicy_ramen.jpg",
-  "Cheese Ramen": "/cheese_ramen.jpg",
-  "Plain Ramen": "/plain_ramen.jpg",
-  "Gochujang Chili Paste": "/gochujang.jpg",
+  "Plain Ramen Base": "/plain_ramen.jpg",
+  "Spicy Ramen Base": "/spicy_ramen.jpg",
+  "Cheese Ramen Base": "/cheese_ramen.jpg",
+  "Gochujang Paste": "/gochujang.jpg",
+  "Fresh Seaweed": "/seaweed.jpg",
+  "Shabu balls": "/shabu_balls.jpg",
   "Topokki": "/topokki.jpg",
-  "Seaweed": "/seaweed.jpg",
-  "Mix Shabu Balls": "/shabu_balls.jpg",
-  "Beef Slice": "/beef_slice.jpg",
-  "Luncheon Meat": "/luncheon_meat.jpg",
-  "Porkchops": "/porkchops.jpg",
+  "Beef Slices": "/beef_slice.jpg",
   "Chicken": "/chicken.jpg",
+  "Juicy Porkchops": "/porkchops.jpg",
+  "Luncheon Meat": "/luncheon_meat.jpg",
 };
 
-// Asynchronous helper to preload images safely before injecting onto canvas matrix
+// Helper object to parse real kiss pricing data matching your exact custom menu rates
+const ramenPricesLookup: Record<string, number> = {
+  "Plain Ramen Base": 5,
+  "Spicy Ramen Base": 8,
+  "Cheese Ramen Base": 10,
+  "Gochujang Paste": 2,
+  "Fresh Seaweed": 3,
+  "Shabu balls": 4,
+  "Topokki": 5,
+  "Beef Slices": 7,
+  "Chicken": 6,
+  "Juicy Porkchops": 8,
+  "Luncheon Meat": 5,
+};
+
 const loadImage = (src: string): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -43,11 +58,9 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
   const canvas = document.createElement('canvas');
   canvas.width = 800;
   
-  // Calculate dynamic height parameters
   const selectedMediaCount = (state.selectedMovies || []).length + (state.selectedSeries || []).length;
-  const chosenRamen = Object.entries(state.selectedRamenItems || {}).filter(([_, qty]) => qty > 0);
+  const chosenRamen = Object.entries(state.selectedRamenItems || {}).filter(([_, qty]) => (qty as number) > 0);
   
-  // Extra spacing padding allocation if feedback variables are active
   const hasFeedback = (state.feedbackStars && state.feedbackStars > 0) || state.feedbackNote;
   const feedbackPadding = hasFeedback ? 160 : 0;
 
@@ -56,7 +69,7 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
   const ctx = canvas.getContext('2d');
   if (!ctx) return '';
 
-  // Background - elegant cream with pink tint
+  // Background - elegant cream pink tint
   const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
   bgGradient.addColorStop(0, '#fdf2f8');
   bgGradient.addColorStop(1, '#fce7f3');
@@ -138,7 +151,6 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
       ctx.textAlign = 'left';
       ctx.fillText(title, 145, y + 25);
       
-      // If she typed a suggestion specifically for this layout block
       if (state.customMovieSuggestion) {
         ctx.font = "italic 14px 'Arial', sans-serif";
         ctx.fillStyle = '#64748b';
@@ -176,7 +188,6 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
     y += 15;
   }
 
-  // CUSTOM DATE SUGGESTION FIELD IF APPLICABLE
   if (state.dateType === "Something Custom" && state.customDateIdea) {
     ctx.font = "bold 20px 'Arial', sans-serif";
     ctx.fillStyle = '#be185d';
@@ -190,7 +201,7 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
     y += 55;
   }
 
-  // 🌟 NEW SECTION 3: THE PRINCESS REVIEW & FEEDBACK STAMP
+  // 🌟 SECTION 3: THE PRINCESS REVIEW & FEEDBACK STAMP
   if (hasFeedback) {
     ctx.font = "bold 22px 'Arial', sans-serif";
     ctx.fillStyle = '#be185d';
@@ -198,7 +209,6 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
     ctx.fillText('⭐ Princess Review Score', 50, y);
     y += 35;
 
-    // Draw Gold Stars Matrix
     if (state.feedbackStars && state.feedbackStars > 0) {
       ctx.font = "bold 24px 'Arial', sans-serif";
       let starsString = "";
@@ -209,12 +219,9 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
       y += 35;
     }
 
-    // Draw Written Feedback Note
     if (state.feedbackNote) {
       ctx.font = "italic 15px 'Arial', sans-serif";
       ctx.fillStyle = '#475569';
-      
-      // Basic manual wrapping lines logic text clip handler
       const textLine = state.feedbackNote.length > 75 ? `${state.feedbackNote.slice(0, 72)}...` : state.feedbackNote;
       ctx.fillText(`"${textLine}"`, 70, y);
       y += 30;
@@ -233,23 +240,39 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
   ctx.setLineDash([]);
   y += 40;
 
-  // Calculations Section
+  // 💰 CORE MATH ENGINE: Calculate genuine hotpot subtotal in real numbers
+  const calculatedRamenCost = chosenRamen.reduce((sum, [itemId, qty]) => {
+    const price = ramenPricesLookup[itemId] || 0;
+    return sum + price * (qty as number);
+  }, 0);
+
+  const eventCost = 1;
+  const mediaCost = combinedMedia.length;
+  const serviceCharge = 1;
+  const tipsAmount = state.tipsAmount || 0;
+
+  // Real Subtotal = Event + Media items + Hotpot items
+  const actualKissesSubtotal = eventCost + mediaCost + calculatedRamenCost;
+  const calculatedGrandTotal = actualKissesSubtotal + serviceCharge + tipsAmount;
+
   ctx.font = "bold 18px 'Arial', sans-serif";
   ctx.fillStyle = '#475569';
   ctx.textAlign = 'left';
 
-  const baseServiceCost = 1;
-  const calculatedGrandTotal = (state.tipsAmount || 0) + baseServiceCost;
-
-  ctx.fillText(`Service Charge: 1 💋`, 70, y);
+  ctx.fillText(`Service Charge: ${serviceCharge} 💋`, 70, y);
   y += 35;
 
-  if (state.tipsAmount > 0) {
-    ctx.fillText(`Kisses Subtotal: ${state.tipsAmount} 💋`, 70, y);
+  ctx.fillText(`Kisses Subtotal: ${actualKissesSubtotal} 💋`, 70, y);
+  y += 35;
+
+  if (tipsAmount > 0) {
+    ctx.fillText(`Added Extra Love Tips: ${tipsAmount} 💋`, 70, y);
     y += 40;
+  } else {
+    y += 5;
   }
 
-  // Grand Total Box Element Highlight
+  // Grand Total Highlight Container Box
   const boxHeight = 65;
   const totalGradient = ctx.createLinearGradient(40, y - 15, 40, y + boxHeight);
   totalGradient.addColorStop(0, '#f472b6');
@@ -263,7 +286,7 @@ export const generateReceiptImage = async (state: AppState): Promise<string> => 
   ctx.fillText(`TOTAL PAID: ${calculatedGrandTotal} 💋`, 400, y + 25);
   y += boxHeight + 40;
 
-  // Footer Authentication Metadata Block
+  // Footer Metadata Block
   ctx.strokeStyle = '#f472b6';
   ctx.lineWidth = 1;
   ctx.setLineDash([5, 5]);
