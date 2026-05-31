@@ -9,30 +9,45 @@ import { downloadReceipt } from '@/lib/receiptGenerator';
 import Sparkles from '../animations/Sparkles';
 
 const mediaPosters: Record<string, string> = {
-  "Love Reset": "/lovereset.jpg",
-  "Be With You": "/bewithyou.jpg",
+  "Love Reset": "/LoveReset.jpg",
+  "Steal My Heart": "/StealMyHeart.jpg",
   "Sweet & Sour": "/sweetsour.jpg",
-  "Mood Of The Day": "/moodoftheday.jpg",
-  "Little Forest": "/littleforest.jpg",
-  "My Dearest Nemesis": "/mydearestnemesis.jpg",
-  "Genie, Make a Wish": "/geniemakeawish.jpg",
-  "My Demon": "/mydemon.jpg",
-  "Perfect Crown": "/perfectcrown.jpg",
-  "My Roommate Is a Gumiho": "/myroommateisagumiho.jpg",
+  "Mood Of The Day": "/MoodOfTheDay.jpg",
+  "Little Forest": "/LettleForest.jpg",
+  "My Dearest Nemesis": "/MyDearestNemesis.jpg",
+  "Genie, Make a Wish": "/GenieMakeaWish.jpg",
+  "My Demon": "/MyDemon.jpg",
+  "Perfect Crown": "/PerfectCrown.jpg",
+  "Queen of Tears": "/QueenOFTears.jpg",
 };
 
+// FIXED: Synced arrays with the true Screen 4 filenames
 const ramenImages: Record<string, string> = {
-  "Spicy Ramen": "/spicy_ramen.jpg",
-  "Cheese Ramen": "/cheese_ramen.jpg",
-  "Plain Ramen": "/plain_ramen.jpg",
-  "Gochujang Chili Paste": "/gochujang.jpg",
+  "Plain Ramen Base": "/plain_ramen.jpg",
+  "Spicy Ramen Base": "/spicy_ramen.jpg",
+  "Cheese Ramen Base": "/cheese_ramen.jpg",
+  "Gochujang Paste": "/gochujang.jpg",
+  "Fresh Seaweed": "/seaweed.jpg",
+  "Shabu balls": "/shabu_balls.jpg",
   "Topokki": "/topokki.jpg",
-  "Seaweed": "/seaweed.jpg",
-  "Mix Shabu Balls": "/shabu_balls.jpg",
-  "Beef Slice": "/beef_slice.jpg",
-  "Luncheon Meat": "/luncheon_meat.jpg",
-  "Porkchops": "/porkchops.jpg",
+  "Beef Slices": "/beef_slice.jpg",
   "Chicken": "/chicken.jpg",
+  "Juicy Porkchops": "/porkchops.jpg",
+  "Luncheon Meat": "/luncheon_meat.jpg",
+};
+
+const ramenPricesLookup: Record<string, number> = {
+  "Plain Ramen Base": 5,
+  "Spicy Ramen Base": 8,
+  "Cheese Ramen Base": 10,
+  "Gochujang Paste": 2,
+  "Fresh Seaweed": 3,
+  "Shabu balls": 4,
+  "Topokki": 5,
+  "Beef Slices": 7,
+  "Chicken": 6,
+  "Juicy Porkchops": 8,
+  "Luncheon Meat": 5,
 };
 
 const Screen6_Checkout: React.FC = () => {
@@ -43,7 +58,6 @@ const Screen6_Checkout: React.FC = () => {
   const [isRevealed, setIsRevealed] = useState(false);
   const [showReceiptDetails, setShowReceiptDetails] = useState(false);
 
-  // Rating & Review States
   const [starRating, setStarRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [feedbackNote, setFeedbackNote] = useState<string>("");
@@ -66,7 +80,6 @@ const Screen6_Checkout: React.FC = () => {
   };
 
   const handleSubmitFeedback = () => {
-    // 🌟 Crucial: Save the feedback to global state BEFORE she downloads the bill
     setState({
       feedbackStars: starRating,
       feedbackNote: feedbackNote.trim()
@@ -75,7 +88,6 @@ const Screen6_Checkout: React.FC = () => {
   };
 
   const handleDownloadReceipt = async () => {
-    // Re-trigger saveOrder to attach the fresh feedback parameters into history logs safely
     saveOrder(selectedPayment);
     await downloadReceipt({
       ...state,
@@ -85,7 +97,19 @@ const Screen6_Checkout: React.FC = () => {
     setShowReceiptDetails(true);
   };
 
-  const chosenRamen = Object.entries(state.selectedRamenItems || {}).filter(([_, qty]) => qty > 0);
+  const chosenRamen = Object.entries(state.selectedRamenItems || {}).filter(([_, qty]) => (qty as number) > 0);
+
+  // Calculate live preview calculations for display element block
+  const calculatedRamenCost = chosenRamen.reduce((sum, [itemId, qty]) => {
+    const price = ramenPricesLookup[itemId] || 0;
+    return sum + price * (qty as number);
+  }, 0);
+
+  const combinedMedia = [...(state.selectedMovies || []), ...(state.selectedSeries || [])];
+  const eventCost = 1;
+  const mediaCost = combinedMedia.length;
+  const serviceCharge = 1;
+  const totalChargedPreview = eventCost + mediaCost + calculatedRamenCost + serviceCharge + (state.tipsAmount || 0);
 
   if (isProcessing) {
     return (
@@ -168,7 +192,6 @@ const Screen6_Checkout: React.FC = () => {
             )}
           </div>
 
-          {/* 📅 DOWNLOAD TRIGGER INTERACTORS: APPEARS AFTER OR CONTROLS ACCORDINGLY */}
           <div className="space-y-3 mt-6">
             <button
               onClick={handleDownloadReceipt}
@@ -185,7 +208,7 @@ const Screen6_Checkout: React.FC = () => {
             )}
           </div>
 
-          {/* RENDER BILL PREVIEW DISPLAY DETAILS ON SCREEN BELOW */}
+          {/* RENDER BILL PREVIEW DISPLAY DETAILS */}
           <AnimatePresence>
             {showReceiptDetails && (
               <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mt-8 bg-white rounded-3xl p-6 shadow-xl border border-pink-100 space-y-6">
@@ -194,11 +217,11 @@ const Screen6_Checkout: React.FC = () => {
                   <h2 className="text-xl font-bold text-slate-800 mt-1">Our Sweet Additions 🧾</h2>
                 </div>
 
-                {((state.selectedMovies || []).length > 0 || (state.selectedSeries || []).length > 0) && (
+                {combinedMedia.length > 0 && (
                   <div className="space-y-3">
                     <h4 className="text-sm font-black text-slate-400 uppercase tracking-wider">🎬 Showtimes to Watch</h4>
                     <div className="grid grid-cols-2 gap-3">
-                      {[...(state.selectedMovies || []), ...(state.selectedSeries || [])].map((title) => (
+                      {combinedMedia.map((title) => (
                         <div key={title} className="bg-pink-50/40 border border-pink-100/60 p-2 rounded-xl flex items-center gap-3">
                           <div className="w-12 h-16 rounded-lg overflow-hidden bg-zinc-200 flex-shrink-0">
                             <img src={mediaPosters[title] || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=100"} alt={title} className="w-full h-full object-cover" />
@@ -235,7 +258,6 @@ const Screen6_Checkout: React.FC = () => {
                   </div>
                 )}
 
-                {/* VISUAL FEEDBACK SCORE PREVIEW */}
                 <div className="bg-amber-50/40 border border-amber-100 p-3 rounded-xl text-xs space-y-1">
                   <span className="font-bold text-amber-700">⭐ Submitted Review Score:</span>
                   <div className="flex gap-0.5 my-1">
@@ -249,10 +271,10 @@ const Screen6_Checkout: React.FC = () => {
                 <div className="bg-slate-50 rounded-2xl p-4 text-xs font-medium text-slate-500 space-y-1.5 border border-slate-100">
                   <p><span className="font-bold text-slate-700">Order Token:</span> #{Date.now().toString().slice(-6)}</p>
                   <p><span className="font-bold text-slate-700">Experience Profile:</span> {state.dateType}</p>
-                  <p><span className="font-bold text-slate-700">Settlement Gateway:</span> KissPay ({state.paymentMethod})</p>
+                  <p><span className="font-bold text-slate-700">Settlement Gateway:</span> KissPay ({selectedPayment})</p>
                   <div className="border-t border-slate-200/60 mt-2 pt-2 flex justify-between items-center text-sm">
                     <span className="font-black text-slate-700">Total Charged:</span>
-                    <span className="font-black text-pink-500 text-base">{(state.tipsAmount || 0) + 1} Kisses 💋</span>
+                    <span className="font-black text-pink-500 text-base">{totalChargedPreview} Kisses 💋</span>
                   </div>
                 </div>
               </motion.div>
