@@ -3,29 +3,27 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { useApp } from "@/lib/context/AppContext"
-import { Soup, Plus, Minus, CheckCircle, Pencil } from "lucide-react"
+import { Soup, Plus, Minus, CheckCircle, Pencil, Wallet } from "lucide-react"
 
-// Complete menu built from your exact public folder files
+// Complete menu with pricing calculations included
 const ramenIngredients = [
   // 🍜 RAMEN BASES
-  { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base" },
-  { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base" },
-  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Ramen Bace" },
+  { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base", price: 120 },
+  { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base", price: 140 },
+  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Ramen Base", price: 150 },
 
   // 🧀 TOPPINGS & SIDES
-  { id: "i4", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping" },
-  { id: "i5", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping" },
-  { id: "i6", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping" },
-  { id: "i7", name: "Topokki", src: "/topokki.jpg", type: "Topping" },
+  { id: "i4", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping", price: 30 },
+  { id: "i5", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping", price: 40 },
+  { id: "i6", name: "Shabu balls", src: "/shabu_balls.jpg", type: "Topping", price: 60 },
+  { id: "i7", name: "Topokki", src: "/topokki.jpg", type: "Topping", price: 70 },
   
   // 🥩 MEATS & PROTEINS
-  { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
-  { id: "i9", name: "Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
-  { id: "i10", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
-  { id: "i11", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
-  
+  { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein", price: 110 },
+  { id: "i9", name: "Chicken", src: "/chicken.jpg", type: "Meat / Protein", price: 90 },
+  { id: "i10", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein", price: 120 },
+  { id: "i11", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein", price: 80 },
 ]
-
 
 export default function Screen4_RamenCustomization() {
   const { state, setState, goToScreen } = useApp()
@@ -45,6 +43,12 @@ export default function Screen4_RamenCustomization() {
     })
   }
 
+  // 💰 Compute total running hotpot price dynamically
+  const totalRamenPrice = ramenIngredients.reduce((sum, item) => {
+    const quantity = selectedRamenItems[item.name] || 0
+    return sum + (quantity * item.price)
+  }, 0)
+
   return (
     <div className="min-h-screen w-full bg-[#111622] text-slate-100 p-4 md:p-8 pt-28 pb-32 relative overflow-y-auto">
       <div className="max-w-6xl mx-auto z-10 relative">
@@ -63,7 +67,7 @@ export default function Screen4_RamenCustomization() {
         </div>
 
         {/* Ingredients Selection Matrix Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
           {ramenIngredients.map((item) => {
             const count = selectedRamenItems[item.name] || 0
             return (
@@ -82,7 +86,10 @@ export default function Screen4_RamenCustomization() {
                 {/* Info and Counter Elements */}
                 <div className="text-left px-1">
                   <h3 className="text-xs md:text-sm font-bold text-zinc-200 truncate">{item.name}</h3>
-                  <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mt-0.5 opacity-80">{item.type}</p>
+                  <div className="flex justify-between items-center mt-0.5">
+                    <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider opacity-80">{item.type}</p>
+                    <p className="text-xs font-extrabold text-zinc-400">₹{item.price}</p>
+                  </div>
                 </div>
 
                 {/* Counter Interface */}
@@ -107,6 +114,22 @@ export default function Screen4_RamenCustomization() {
               </div>
             )
           })}
+        </div>
+
+        {/* 💰 LIVE RUNNING TOTAL PRICE CONTAINER */}
+        <div className="bg-[#1c263f] border-2 border-amber-500/30 rounded-2xl p-4 mb-8 max-w-2xl mx-auto flex items-center justify-between shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="bg-amber-500/20 p-2.5 rounded-xl">
+              <Wallet className="w-5 h-5 text-amber-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Estimated Pot Total</p>
+              <p className="text-[11px] text-zinc-500 font-medium">Updates dynamically based on servings</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-2xl font-black text-amber-400">₹{totalRamenPrice}</span>
+          </div>
         </div>
 
         {/* Suggestion Write-In Box */}
