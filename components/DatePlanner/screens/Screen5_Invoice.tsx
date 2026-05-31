@@ -18,31 +18,31 @@ const Screen5_Invoice: React.FC = () => {
   ];
 
   const calculateEventCost = () => {
-    const baseCount = state.selectedGames.length > 0 ? 1 : 1; // Event cost = 1 Kiss
+    const baseCount = state.selectedGames?.length > 0 ? 1 : 1; // Event cost = 1 Kiss
     return baseCount;
   };
 
   const calculateMediaCost = () => {
-    return state.selectedMovies.length + state.selectedSeries.length;
+    return (state.selectedMovies?.length || 0) + (state.selectedSeries?.length || 0);
   };
 
   const calculateRamenCost = () => {
+    // 🍲 Updated item matrix to seamlessly lookup exact database string keys from Screen 4
     const ramenOptions = [
-      { id: 'tonkotsu', kisses: 4 },
-      { id: 'miso', kisses: 4 },
-      { id: 'shoyu', kisses: 4 },
-      { id: 'spicy', kisses: 4 },
-      { id: 'egg', kisses: 2 },
-      { id: 'seaweed', kisses: 2 },
-      { id: 'corn', kisses: 2 },
-      { id: 'bamboo', kisses: 2 },
-      { id: 'pork', kisses: 6 },
-      { id: 'chicken', kisses: 6 },
-      { id: 'beef', kisses: 6 },
-      { id: 'shrimp', kisses: 6 },
+      { id: 'Plain Ramen Base', kisses: 5 },
+      { id: 'Spicy Ramen Base', kisses: 8 },
+      { id: 'Cheese Ramen Base', kisses: 10 },
+      { id: 'Gochujang Paste', kisses: 2 },
+      { id: 'Fresh Seaweed', kisses: 3 },
+      { id: 'Shabu balls', kisses: 4 },
+      { id: 'Topokki', kisses: 5 },
+      { id: 'Beef Slices', kisses: 7 },
+      { id: 'Chicken', kisses: 6 },
+      { id: 'Juicy Porkchops', kisses: 8 },
+      { id: 'Luncheon Meat', kisses: 5 },
     ];
 
-    return Object.entries(state.selectedRamenItems).reduce((sum, [itemId, qty]) => {
+    return Object.entries(state.selectedRamenItems || {}).reduce((sum, [itemId, qty]) => {
       const item = ramenOptions.find((r) => r.id === itemId);
       return sum + (item?.kisses || 0) * (qty as number);
     }, 0);
@@ -60,7 +60,7 @@ const Screen5_Invoice: React.FC = () => {
   };
 
   const handleAddTip = (kisses: number, event: React.MouseEvent<HTMLButtonElement>) => {
-    setState({ tipsAmount: state.tipsAmount + kisses });
+    setState({ tipsAmount: (state.tipsAmount || 0) + kisses });
 
     // Create multiple floating particles from button
     const rect = event.currentTarget.getBoundingClientRect();
@@ -104,14 +104,14 @@ const Screen5_Invoice: React.FC = () => {
         transition={{ delay: 0.2 }}
       >
         {/* Invoice Header Section */}
-<div className="text-center mb-8 flex flex-col items-center">
-  <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Our Date Night Summary 📝</h1>
-  <p className="text-slate-500 font-medium mb-4">Here is our finalized order breakdown</p>
-  {/* Billing Page GIF */}
-  <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-2xl">
-    <img src="/billing-header.gif" alt="Pusheen Invoice" className="w-full h-full object-contain" />
-  </div>
-</div>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Our Date Night Summary 📝</h1>
+          <p className="text-slate-500 font-medium mb-4">Here is our finalized order breakdown</p>
+          {/* Billing Page GIF */}
+          <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-2xl">
+            <img src="/billing-header.gif" alt="Pusheen Invoice" className="w-full h-full object-contain" />
+          </div>
+        </div>
 
         {/* Receipt Card with wavy edges */}
         <motion.div 
@@ -146,7 +146,7 @@ const Screen5_Invoice: React.FC = () => {
               </div>
             )}
 
-            {state.selectedMovies.length > 0 && (
+            {state.selectedMovies?.length > 0 && (
               <div className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
                 <div className="flex items-center gap-2">
                   <span className="text-3xl">🎥</span>
@@ -156,7 +156,7 @@ const Screen5_Invoice: React.FC = () => {
               </div>
             )}
 
-            {state.selectedSeries.length > 0 && (
+            {state.selectedSeries?.length > 0 && (
               <div className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
                 <div className="flex items-center gap-2">
                   <span className="text-3xl">📺</span>
@@ -166,31 +166,31 @@ const Screen5_Invoice: React.FC = () => {
               </div>
             )}
 
-            {Object.entries(state.selectedRamenItems).length > 0 && (
+            {Object.entries(state.selectedRamenItems || {}).filter(([_, qty]) => (qty as number) > 0).length > 0 && (
               <div className="space-y-2">
                 {Object.entries(state.selectedRamenItems).map(([itemId, qty]) => {
+                  // 🎀 Dynamic display mapping setup to correctly process text strings and match custom emojis
                   const ramenMap: Record<string, { name: string; emoji: string; kisses: number }> = {
-                    tonkotsu: { name: 'Tonkotsu', emoji: '🍜', kisses: 4 },
-                    miso: { name: 'Miso', emoji: '🍲', kisses: 4 },
-                    shoyu: { name: 'Shoyu', emoji: '🍜', kisses: 4 },
-                    spicy: { name: 'Spicy', emoji: '🌶️', kisses: 4 },
-                    egg: { name: 'Egg', emoji: '🥚', kisses: 2 },
-                    seaweed: { name: 'Seaweed', emoji: '🌿', kisses: 2 },
-                    corn: { name: 'Corn', emoji: '🌽', kisses: 2 },
-                    bamboo: { name: 'Bamboo', emoji: '🎋', kisses: 2 },
-                    pork: { name: 'Pork', emoji: '🐷', kisses: 6 },
-                    chicken: { name: 'Chicken', emoji: '🍗', kisses: 6 },
-                    beef: { name: 'Beef', emoji: '🥩', kisses: 6 },
-                    shrimp: { name: 'Shrimp', emoji: '🦐', kisses: 6 },
+                    'Plain Ramen Base': { name: 'Plain Ramen Base', emoji: '🍜', kisses: 5 },
+                    'Spicy Ramen Base': { name: 'Spicy Ramen Base', emoji: '🌶️', kisses: 8 },
+                    'Cheese Ramen Base': { name: 'Cheese Ramen Base', emoji: '🍲', kisses: 10 },
+                    'Gochujang Paste': { name: 'Gochujang Paste', emoji: '🥫', kisses: 2 },
+                    'Fresh Seaweed': { name: 'Fresh Seaweed', emoji: '🌿', kisses: 3 },
+                    'Shabu balls': { name: 'Shabu balls', emoji: '🍢', kisses: 4 },
+                    'Topokki': { name: 'Topokki', emoji: '🍡', kisses: 5 },
+                    'Beef Slices': { name: 'Beef Slices', emoji: '🥩', kisses: 7 },
+                    'Chicken': { name: 'Chicken', emoji: '🍗', kisses: 6 },
+                    'Juicy Porkchops': { name: 'Juicy Porkchops', emoji: '🐷', kisses: 8 },
+                    'Luncheon Meat': { name: 'Luncheon Meat', emoji: '🥓', kisses: 5 },
                   };
                   const item = ramenMap[itemId];
-                  return item ? (
+                  return item && (qty as number) > 0 ? (
                     <div key={itemId} className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
                       <div className="flex items-center gap-2">
                         <span className="text-3xl">{item.emoji}</span>
                         <span className="font-semibold">{item.name} x{qty}</span>
                       </div>
-                      <span className="font-bold text-pink-600">{item.kisses * qty} Kisses</span>
+                      <span className="font-bold text-pink-600">{item.kisses * (qty as number)} Kisses</span>
                     </div>
                   ) : null;
                 })}
