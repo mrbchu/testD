@@ -1,188 +1,357 @@
-"use client"
+'use client';
 
-import React from "react"
-import { motion } from "framer-motion"
-import { useApp } from "@/lib/context/AppContext"
-import { ArrowLeft, CheckCircle } from "lucide-react"
+import React, { useState } from 'react';
+import { useApp } from '@/lib/context/AppContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import FloatingKisses from '../animations/FloatingKisses';
 
-const ramenIngredientsLookup = [
-  { name: "Plain Ramen Base", price: 5 },
-  { name: "Spicy Ramen Base", price: 8 },
-  { name: "Cheese Ramen Base", price: 10 },
-  { name: "Gochujang Paste", price: 2 },
-  { name: "Fresh Seaweed", price: 3 },
-  { name: "Shabu balls", price: 4 },
-  { name: "Topokki", price: 5 },
-  { name: "Beef Slices", price: 7 },
-  { name: "Chicken", price: 6 },
-  { name: "Juicy Porkchops", price: 8 },
-  { name: "Luncheon Meat", price: 5 },
-]
+const Screen5_Invoice: React.FC = () => {
+  const { state, setState, goToScreen } = useApp();
+  const [showRevealText, setShowRevealText] = useState(false);
+  const [showTipModal, setShowTipModal] = useState(false);
+  const [floatingKisses, setFloatingKisses] = useState<Array<{ id: string; x: number; y: number }>>([]);
 
-export default function Screen5_Invoice() {
-  const { state, setState, goToScreen } = useApp()
+  const tipOptions = [
+    { label: '2 Kisses', kisses: 2 },
+    { label: '4 Kisses', kisses: 4 },
+    { label: '6 Kisses', kisses: 6 },
+  ];
 
-  const selectedMovies = state.selectedMovies || []
-  const selectedSeries = state.selectedSeries || []
-  const selectedRamenItems = state.selectedRamenItems || {}
-  const customMovieSuggestion = state.customMovieSuggestion || ""
-  const customRamenSuggestion = state.customRamenSuggestion || ""
-  const userName = state.userName || "Princess"
+  const calculateEventCost = () => {
+    const baseCount = state.selectedGames.length > 0 ? 1 : 1; // Event cost = 1 Kiss
+    return baseCount;
+  };
 
-  // Compile active ingredients and calculate totals
-  const activeRamenIngredients = ramenIngredientsLookup
-    .filter(item => (selectedRamenItems[item.name] || 0) > 0)
-    .map(item => ({
-      name: item.name,
-      quantity: selectedRamenItems[item.name],
-      itemTotal: (selectedRamenItems[item.name] || 0) * item.price
-    }))
+  const calculateMediaCost = () => {
+    return state.selectedMovies.length + state.selectedSeries.length;
+  };
 
-  const grandTotalKisses = activeRamenIngredients.reduce((sum, item) => sum + item.itemTotal, 0)
+  const calculateRamenCost = () => {
+    const ramenOptions = [
+      { id: 'tonkotsu', kisses: 4 },
+      { id: 'miso', kisses: 4 },
+      { id: 'shoyu', kisses: 4 },
+      { id: 'spicy', kisses: 4 },
+      { id: 'egg', kisses: 2 },
+      { id: 'seaweed', kisses: 2 },
+      { id: 'corn', kisses: 2 },
+      { id: 'bamboo', kisses: 2 },
+      { id: 'pork', kisses: 6 },
+      { id: 'chicken', kisses: 6 },
+      { id: 'beef', kisses: 6 },
+      { id: 'shrimp', kisses: 6 },
+    ];
+
+    return Object.entries(state.selectedRamenItems).reduce((sum, [itemId, qty]) => {
+      const item = ramenOptions.find((r) => r.id === itemId);
+      return sum + (item?.kisses || 0) * (qty as number);
+    }, 0);
+  };
+
+  const eventCost = calculateEventCost();
+  const mediaCost = calculateMediaCost();
+  const ramenCost = calculateRamenCost();
+  const subtotal = eventCost + mediaCost + ramenCost;
+  const serviceCharge = 1; // 1 Kiss service charge
+  const totalBeforeTip = subtotal + serviceCharge;
+
+  const handleGoBack = () => {
+    goToScreen(4);
+  };
+
+  const handleAddTip = (kisses: number, event: React.MouseEvent<HTMLButtonElement>) => {
+    setState({ tipsAmount: state.tipsAmount + kisses });
+
+    // Create multiple floating particles from button
+    const rect = event.currentTarget.getBoundingClientRect();
+    const buttonCenterX = rect.left + rect.width / 2;
+    const buttonCenterY = rect.top + rect.height / 2;
+
+    // Spawn 5-8 particles in rapid succession
+    const particleCount = 6 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < particleCount; i++) {
+      setTimeout(() => {
+        const id = `kiss-${Date.now()}-${i}-${Math.random()}`;
+        setFloatingKisses((prev) => [...prev, { id, x: buttonCenterX, y: buttonCenterY }]);
+
+        setTimeout(() => {
+          setFloatingKisses((prev) => prev.filter((k) => k.id !== id));
+        }, 2000);
+      }, i * 50);
+    }
+  };
+
+  const handleProceedPayment = () => {
+    goToScreen(6);
+  };
 
   return (
-    <div className="min-h-screen w-full bg-[#160d15] text-slate-100 p-4 md:p-8 pt-28 pb-32 relative overflow-y-auto">
-      <div className="max-w-6xl mx-auto z-10 relative">
-        
-        {/* Header Block */}
-        <div className="text-center mb-10 px-16 md:px-8 flex flex-col items-center">
-          <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-pink-400 to-rose-300 bg-clip-text text-transparent mb-3">
-            Our Date Ledger 🧾
-          </h1>
-          <p className="text-zinc-400 text-sm md:text-base font-medium mb-4">
-            Review our synchronized agenda before locking in the reservations
-          </p>
-          <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-2xl">
-            <img src="/billing-header.gif" alt="Billing Header" className="w-full h-full object-contain" />
-          </div>
-        </div>
+    <motion.div
+      className="min-h-screen w-full px-4 md:px-6 py-8 pt-28 md:pt-20"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Floating kisses */}
+      {floatingKisses.map((kiss) => (
+        <FloatingKisses key={kiss.id} x={kiss.x} y={kiss.y} />
+      ))}
 
-        {/* Core Invoice Card Layout */}
-        <div className="max-w-3xl mx-auto bg-[#1c121b] border border-zinc-800 rounded-3xl p-6 text-left shadow-xl relative overflow-hidden space-y-6">
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-pink-400 to-rose-300" />
+      <motion.div
+        className="max-w-2xl mx-auto"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        {/* Invoice Header Section */}
+<div className="text-center mb-8 flex flex-col items-center">
+  <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Our Date Night Summary 📝</h1>
+  <p className="text-slate-500 font-medium mb-4">Here is our finalized order breakdown</p>
+  {/* Billing Page GIF */}
+  <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-2xl">
+    <img src="/billing-header.gif" alt="Pusheen Invoice" className="w-full h-full object-contain" />
+  </div>
+</div>
 
-          {/* Profile Row */}
-          <div className="flex justify-between items-center border-b border-zinc-800/80 pb-4 text-xs font-bold text-zinc-400">
-            <div>
-              <p className="uppercase tracking-wider text-[10px] text-pink-400">Reservation For</p>
-              <p className="text-sm font-black text-zinc-200 mt-0.5">👑 {userName}</p>
-            </div>
-            <div className="text-right">
-              <p className="uppercase tracking-wider text-[10px] text-amber-400">Invoice Status</p>
-              <p className="text-sm font-black text-emerald-400 mt-0.5">Pending Kisses</p>
-            </div>
-          </div>
-
-          {/* 🍿 1. SHOWTIME SELECTIONS */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-black uppercase text-pink-400 tracking-wider">1. Showtime Selections</h3>
-            <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-2 text-sm font-semibold text-zinc-300">
-              {selectedMovies.length === 0 && selectedSeries.length === 0 ? (
-                <p className="text-zinc-500 italic font-medium">No shows selected yet...</p>
-              ) : (
-                [...selectedMovies, ...selectedSeries].map((title, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-pink-500" />
-                    <span>{title}</span>
-                  </div>
-                ))
-              )}
-              
-              {/* 🎀 RESTORED: Anything Else My Princess */}
-              {customMovieSuggestion && (
-                <div className="pt-2 border-t border-zinc-800/40 mt-2">
-                  <p className="text-[11px] font-black uppercase text-pink-300 tracking-wider">Anything else my princess:</p>
-                  <p className="text-xs text-zinc-400 italic font-medium mt-0.5">"{customMovieSuggestion}"</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* 🍲 2. HOTPOT RECIPE BASKET */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-black uppercase text-amber-400 tracking-wider">2. Hotpot Recipe Basket</h3>
-            <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-xl p-4 space-y-3">
-              {activeRamenIngredients.length === 0 ? (
-                <p className="text-sm font-medium text-zinc-500 italic">Your recipe basket is currently empty...</p>
-              ) : (
-                activeRamenIngredients.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center text-sm font-bold">
-                    <div className="flex items-center gap-2 text-zinc-300">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                      <span>{item.name}</span>
-                      <span className="text-xs font-medium text-zinc-500">x{item.quantity}</span>
-                    </div>
-                    <span className="text-pink-400 text-xs font-black">{item.itemTotal} Kisses</span>
-                  </div>
-                ))
-              )}
-
-              {customRamenSuggestion && (
-                <div className="pt-2 border-t border-zinc-800/40 mt-2">
-                  <p className="text-[11px] font-black uppercase text-amber-300 tracking-wider">Extra recipe requests & drinks:</p>
-                  <p className="text-xs text-zinc-400 italic font-medium mt-0.5">"{customRamenSuggestion}"</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* ⚠️ RESTORED: TIPS & WARNING SECTIONS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-zinc-800/60">
-            <div className="bg-zinc-900/30 border border-zinc-800/40 rounded-xl p-3 text-xs">
-              <span className="font-bold text-amber-400">💡 Pro-Tip for Date Night:</span>
-              <p className="text-zinc-400 mt-0.5 font-medium leading-relaxed">
-                Make sure the cozy blankets are ready and the phone is on Do Not Disturb mode before launching the watch party streams!
-              </p>
-            </div>
-            <div className="bg-rose-500/5 border border-rose-500/10 rounded-xl p-3 text-xs">
-              <span className="font-bold text-rose-400">⚠️ Mandatory Warning:</span>
-              <p className="text-zinc-400 mt-0.5 font-medium leading-relaxed">
-                Prices calculated here represent strict physical debt requirements. No skipping out on the kiss tolls at the door!
-              </p>
-            </div>
-          </div>
-
-          {/* 💳 RESTORED: PREVIOUS PAYMENTS / HISTORICAL ACCOUNT DATA */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-3.5 text-xs space-y-1">
-            <p className="font-bold text-zinc-400 uppercase tracking-wider text-[10px]">Previous Transactions & Historical Records</p>
-            <div className="flex justify-between text-zinc-500 font-semibold pt-1 text-[11px]">
-              <span>Last Active Arrangement Status:</span>
-              <span className="text-emerald-500/90 font-bold">Paid & Fulfilled Successfully ✓</span>
-            </div>
-          </div>
-
-          {/* GRAND TOTAL ROW */}
-          <div className="pt-4 border-t border-dashed border-zinc-800 flex justify-between items-center">
-            <div>
-              <p className="text-sm font-black uppercase text-zinc-400 tracking-wider">Grand Date Total</p>
-              <p className="text-[10px] font-medium text-zinc-500 mt-0.5">Non-refundable romantic value assessment</p>
-            </div>
-            <div className="flex items-center gap-1 bg-pink-500/10 border border-pink-500/20 px-4 py-2 rounded-2xl">
-              <span className="text-xl font-black text-pink-400">{grandTotalKisses}</span>
-              <span className="text-sm font-extrabold text-pink-300">Kisses 💋</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* BOTTOM NAVIGATION ACTIONS */}
-        <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-[#160d15] via-[#160d15]/90 to-transparent pt-6 pb-6 px-4 flex justify-center gap-3 z-30">
-          <button
-            onClick={() => goToScreen(4)}
-            className="w-32 bg-zinc-800/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 py-4 rounded-full font-bold text-base transition-all shadow-md cursor-pointer border border-zinc-700/50 flex items-center justify-center gap-1.5"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
+        {/* Receipt Card with wavy edges */}
+        <motion.div 
+          className="relative bg-gradient-to-b from-pink-50 to-rose-50 rounded-xl p-6 md:p-8 mb-6 md:mb-8 shadow-lg border-2 border-pink-200"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, pink 1px, transparent 1px)',
+            backgroundSize: '8px 8px',
+            backgroundPosition: '0 0, 4px 4px',
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          {/* Wavy edge top */}
+          <div className="absolute -top-2 left-0 right-0 h-2 bg-gradient-to-r from-pink-200 to-rose-200 rounded-full" style={{ clipPath: 'polygon(0 50%, 2% 30%, 4% 50%, 6% 30%, 8% 50%, 10% 30%, 12% 50%, 14% 30%, 16% 50%, 18% 30%, 20% 50%, 22% 30%, 24% 50%, 26% 30%, 28% 50%, 30% 30%, 32% 50%, 34% 30%, 36% 50%, 38% 30%, 40% 50%, 42% 30%, 44% 50%, 46% 30%, 48% 50%, 50% 30%, 52% 50%, 54% 30%, 56% 50%, 58% 30%, 60% 50%, 62% 30%, 64% 50%, 66% 30%, 68% 50%, 70% 30%, 72% 50%, 74% 30%, 76% 50%, 78% 30%, 80% 50%, 82% 30%, 84% 50%, 86% 30%, 88% 50%, 90% 30%, 92% 50%, 94% 30%, 96% 50%, 98% 30%, 100% 50%)' }} />
           
-          <button
-            onClick={() => goToScreen(6)}
-            className="w-full max-w-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 font-bold py-4 rounded-full shadow-xl text-white text-base transition-all tracking-wide cursor-pointer flex items-center justify-center gap-2"
-          >
-            Lock In Date Arrangement <CheckCircle className="w-5 h-5 fill-white/10" />
-          </button>
-        </div>
+          {/* Receipt Header */}
+          <div className="text-center mb-6 pb-4 border-b-2 border-dashed border-pink-300">
+            <p className="text-xl font-bold text-gray-800">✨ Date Invoice ✨</p>
+            <p className="text-sm text-gray-600">{new Date().toLocaleDateString()}</p>
+          </div>
 
-      </div>
-    </div>
-  )
-}
+          {/* Receipt Items */}
+          <div className="space-y-4 mb-6">
+            {state.dateType && (
+              <div className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">🎬</span>
+                  <span className="font-semibold">{state.dateType} Event</span>
+                </div>
+                <span className="font-bold text-pink-600">{eventCost} Kiss</span>
+              </div>
+            )}
+
+            {state.selectedMovies.length > 0 && (
+              <div className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">🎥</span>
+                  <span className="font-semibold">{state.selectedMovies.length} Movie(s)</span>
+                </div>
+                <span className="font-bold text-pink-600">{state.selectedMovies.length} Kisses</span>
+              </div>
+            )}
+
+            {state.selectedSeries.length > 0 && (
+              <div className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">📺</span>
+                  <span className="font-semibold">{state.selectedSeries.length} Series</span>
+                </div>
+                <span className="font-bold text-pink-600">{state.selectedSeries.length} Kisses</span>
+              </div>
+            )}
+
+            {Object.entries(state.selectedRamenItems).length > 0 && (
+              <div className="space-y-2">
+                {Object.entries(state.selectedRamenItems).map(([itemId, qty]) => {
+                  const ramenMap: Record<string, { name: string; emoji: string; kisses: number }> = {
+                    tonkotsu: { name: 'Tonkotsu', emoji: '🍜', kisses: 4 },
+                    miso: { name: 'Miso', emoji: '🍲', kisses: 4 },
+                    shoyu: { name: 'Shoyu', emoji: '🍜', kisses: 4 },
+                    spicy: { name: 'Spicy', emoji: '🌶️', kisses: 4 },
+                    egg: { name: 'Egg', emoji: '🥚', kisses: 2 },
+                    seaweed: { name: 'Seaweed', emoji: '🌿', kisses: 2 },
+                    corn: { name: 'Corn', emoji: '🌽', kisses: 2 },
+                    bamboo: { name: 'Bamboo', emoji: '🎋', kisses: 2 },
+                    pork: { name: 'Pork', emoji: '🐷', kisses: 6 },
+                    chicken: { name: 'Chicken', emoji: '🍗', kisses: 6 },
+                    beef: { name: 'Beef', emoji: '🥩', kisses: 6 },
+                    shrimp: { name: 'Shrimp', emoji: '🦐', kisses: 6 },
+                  };
+                  const item = ramenMap[itemId];
+                  return item ? (
+                    <div key={itemId} className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl">{item.emoji}</span>
+                        <span className="font-semibold">{item.name} x{qty}</span>
+                      </div>
+                      <span className="font-bold text-pink-600">{item.kisses * qty} Kisses</span>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            )}
+
+            {/* Service Charge */}
+            <div className="flex items-center justify-between text-gray-800 bg-white/50 p-2 rounded-lg border-t-2 border-dashed border-pink-300 pt-3 mt-3">
+              <div className="flex items-center gap-2">
+                <span className="text-3xl">🎀</span>
+                <span className="font-semibold">Service</span>
+              </div>
+              <span className="font-bold text-pink-600">{serviceCharge} Kiss</span>
+            </div>
+          </div>
+
+          {/* Subtotal */}
+          <div className="flex justify-between text-lg font-bold text-gray-800 mb-4 p-2">
+            <span>Subtotal:</span>
+            <span>{totalBeforeTip} Kisses</span>
+          </div>
+
+          {/* Tip Display */}
+          {state.tipsAmount > 0 && (
+            <div className="flex justify-between text-lg font-bold text-pink-600 mb-4 p-2">
+              <span>Tips:</span>
+              <span>+{state.tipsAmount} Kisses</span>
+            </div>
+          )}
+
+          {/* Total */}
+          <div className="flex justify-between text-2xl font-bold text-pink-600 p-2 rounded-lg bg-gradient-to-r from-pink-100 to-rose-100">
+            <span>Total:</span>
+            <span>{totalBeforeTip + state.tipsAmount} Kisses</span>
+          </div>
+
+          {/* Wavy edge bottom */}
+          <div className="absolute -bottom-2 left-0 right-0 h-2 bg-gradient-to-r from-pink-200 to-rose-200 rounded-full" style={{ clipPath: 'polygon(0 50%, 2% 70%, 4% 50%, 6% 70%, 8% 50%, 10% 70%, 12% 50%, 14% 70%, 16% 50%, 18% 70%, 20% 50%, 22% 70%, 24% 50%, 26% 70%, 28% 50%, 30% 70%, 32% 50%, 34% 70%, 36% 50%, 38% 70%, 40% 50%, 42% 70%, 44% 50%, 46% 70%, 48% 50%, 50% 70%, 52% 50%, 54% 70%, 56% 50%, 58% 70%, 60% 50%, 62% 70%, 64% 50%, 66% 70%, 68% 50%, 70% 70%, 72% 50%, 74% 70%, 76% 50%, 78% 70%, 80% 50%, 82% 70%, 84% 50%, 86% 70%, 88% 50%, 90% 70%, 92% 50%, 94% 70%, 96% 50%, 98% 70%, 100% 50%)' }} />
+        </motion.div>
+
+        {/* Continue Purchase Section */}
+        <motion.div
+          className="bg-white rounded-2xl p-6 md:p-8 border-2 border-pink-200 mb-6 md:mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <p className="text-center text-base md:text-lg font-bold text-gray-800 mb-4">
+            ANYTHING ELSE MY DEAR PRINCESS? 👑
+          </p>
+
+          <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4">
+            <button
+              onClick={handleGoBack}
+              className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 text-sm md:text-base"
+            >
+              Ahem idk
+            </button>
+            <button
+              onClick={() => setShowRevealText(!showRevealText)}
+              className="px-4 py-2 rounded-lg bg-pink-200 text-pink-700 font-semibold hover:bg-pink-300 text-sm md:text-base"
+            >
+              No thx cutie
+            </button>
+          </div>
+
+          {/* Reveal Text */}
+          <AnimatePresence>
+            {showRevealText && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="text-center text-pink-600 font-bold text-sm"
+              >
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 1 }}
+                >
+                  ayooo Ahemm 🫣
+                </motion.span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Payment Due Warning */}
+        <motion.div
+          className="bg-red-100 border-2 border-red-400 rounded-2xl p-4 mb-8 text-center"
+          animate={{ backgroundColor: ['rgb(254, 226, 226)', 'rgb(254, 240, 240)', 'rgb(254, 226, 226)'] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          <p className="font-bold text-red-700 mb-2">
+            ⚠️ Previous payment due of Video Kisses! ⚠️
+          </p>
+          <button
+            onClick={() => setShowTipModal(true)}
+            className="px-6 py-2 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600"
+          >
+            hehe i&apos;ll pay it soon
+          </button>
+        </motion.div>
+
+        {/* Tip Modal */}
+        <AnimatePresence>
+          {showTipModal && (
+            <motion.div
+              className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="w-full md:max-w-md bg-white rounded-t-3xl md:rounded-3xl p-6 md:p-8"
+                initial={{ y: 300 }}
+                animate={{ y: 0 }}
+                exit={{ y: 300 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <p className="text-center text-base md:text-lg font-bold text-gray-800 mb-6">
+                  Tips: Add some extra love? 💕
+                </p>
+
+                <div className="space-y-3 mb-6">
+                  {tipOptions.map((option) => (
+                    <motion.button
+                      key={option.kisses}
+                      onClick={(e) => handleAddTip(option.kisses, e)}
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-pink-300 to-rose-300 text-white font-bold hover:shadow-lg transition-all text-sm md:text-base"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {option.label}
+                    </motion.button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setShowTipModal(false)}
+                  className="w-full py-2 rounded-lg border-2 border-gray-300 text-gray-800 font-semibold hover:bg-gray-100 text-sm md:text-base"
+                >
+                  Add to cart
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Proceed Button */}
+        <motion.button
+          onClick={handleProceedPayment}
+          className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-pink-400 to-rose-400 hover:shadow-xl transition-all text-lg animate-pulse"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          Proceed for Payment 💖
+        </motion.button>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default Screen5_Invoice;
