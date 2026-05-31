@@ -88,10 +88,10 @@ export default function DatePlannerApp() {
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden">
-      {/* 🎵 GLOBAL BACKGROUND SOUND MATRIX WAVE - UPDATED TO SECURE GOOGLE DRIVE LIVE STREAM SOURCE */}
+      {/* 🎵 GLOBAL BACKGROUND SOUND MATRIX WAVE - LINKED TO LOCAL PUBLIC ASSET ROUTE */}
       <audio 
         ref={audioRef} 
-        src="https://docs.google.com/uc?export=download&id=1Esal1gfkHry3_3rJp1F8x3-3gD9ZSA_P" 
+        src="/background-music.mp3" 
         loop 
         preload="auto" 
       />
