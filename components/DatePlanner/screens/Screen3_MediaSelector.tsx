@@ -8,7 +8,7 @@ import { Film, Tv, CheckCircle2, Play, X, Pencil } from "lucide-react"
 const moviesData = [
   { id: "m1", title: "Love Reset", src: "/lovereset.jpg", trailer: "https://www.youtube.com/embed/vFseJg1WeMk?si=wQtBt6SocLlyySRb" },
   { id: "m2", title: "Steal My Heart", src: "/StealMyHeart.jpg", trailer: "https://www.youtube.com/embed/ujzXXaqAvLo?si=x18M8iBWeseDzsVa" },
-  { id: "m3", title: "Sweet & Sour", src: "/sweet&sour.jpg", trailer: "https://www.youtube.com/embed/hZORUEZd_pg?si=A7CDj3yEyEqIT0WV" },
+  { id: "m3", title: "Sweet & Sour", src: "/sweetsour.jpg", trailer: "https://www.youtube.com/embed/hZORUEZd_pg?si=A7CDj3yEyEqIT0WV" },
   { id: "m4", title: "Mood Of The Day", src: "/moodoftheday.jpg", trailer: "https://www.youtube.com/embed/v_yA_KNTVCs?si=3BcqqH44OobOsPsl" },
   { id: "m5", title: "LittleForest", src: "/LettleForest.jpg", trailer: "https://www.youtube.com/embed/3sVJPHbzabM?si=086FHm1a92rYzkab" },
 ]
