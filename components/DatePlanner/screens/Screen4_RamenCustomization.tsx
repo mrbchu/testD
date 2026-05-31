@@ -5,21 +5,28 @@ import { motion } from "framer-motion"
 import { useApp } from "@/lib/context/AppContext"
 import { Soup, Plus, Minus, CheckCircle, Pencil } from "lucide-react"
 
+// Complete menu built from your exact public folder files
 const ramenIngredients = [
-  { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "base" },
-  { id: "i2", name: "Cheese Slice", src: "/cheese_ramen.jpg", type: "topping" },
-  { id: "i3", name: "Beef Slices", src: "/beef_slice.jpg", type: "protein" },
-  { id: "i4", name: "Tender Chicken", src: "/chicken.jpg", type: "protein" }, // 🍗 NEW: Added Chicken Card
-  { id: "i5", name: "Gochujang Paste", src: "/gochujang.jpg", type: "sauce" },
-  { id: "i6", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "protein" },
-  { id: "i7", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "topping" },
-  { id: "i8", name: "Shabu Meatballs", src: "/shabu_balls.jpg", type: "topping" },
+  // 🍜 RAMEN BASES
+  { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base" },
+  { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base" },
+  
+  // 🥩 MEATS & PROTEINS
+  { id: "i3", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
+  { id: "i4", name: "Tender Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
+  { id: "i5", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
+  { id: "i6", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
+  
+  // 🧀 TOPPINGS & SIDES
+  { id: "i7", name: "Cheese Slice", src: "/cheese_ramen.jpg", type: "Topping" },
+  { id: "i8", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping" },
+  { id: "i9", name: "Fresh Seaweed", src: "/seaweed.jpg", type: "Topping" },
+  { id: "i10", name: "Shabu Meatballs", src: "/shabu_balls.jpg", type: "Topping" },
 ]
 
 export default function Screen4_RamenCustomization() {
   const { state, setState, goToScreen } = useApp()
 
-  // Fallback objects to prevent mapping over undefined state
   const selectedRamenItems = state.selectedRamenItems || {}
   const ramenSuggestion = state.customRamenSuggestion || ""
 
@@ -63,7 +70,7 @@ export default function Screen4_RamenCustomization() {
                 <div className="aspect-square w-full rounded-xl overflow-hidden relative bg-zinc-900 mb-3 border border-zinc-800">
                   <img src={item.src} alt={item.name} className="w-full h-full object-cover" />
                   {count > 0 && (
-                    <div className="absolute top-2 right-2 bg-amber-500 rounded-full p-1 shadow-md z-10 flex items-center justify-center animate-scaleIn">
+                    <div className="absolute top-2 right-2 bg-amber-500 rounded-full p-1 shadow-md z-10 flex items-center justify-center">
                       <CheckCircle className="w-3.5 h-3.5 text-slate-900 fill-amber-400" />
                     </div>
                   )}
@@ -75,7 +82,7 @@ export default function Screen4_RamenCustomization() {
                   <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mt-0.5 opacity-80">{item.type}</p>
                 </div>
 
-                {/* Core Counter Layout interface */}
+                {/* Counter Interface */}
                 <div className="flex items-center justify-between bg-zinc-900/60 rounded-xl mt-3 p-1 border border-zinc-800">
                   <button 
                     onClick={() => updateQuantity(item.name, -1)}
@@ -99,7 +106,7 @@ export default function Screen4_RamenCustomization() {
           })}
         </div>
 
-        {/* 🍿 NEW: RAMEN CUSTOMIZATION WRITE-IN SUGGESTION BOX */}
+        {/* Suggestion Write-In Box */}
         <div className="bg-[#181f32] border border-zinc-800 rounded-3xl p-6 mb-12 max-w-2xl mx-auto text-left shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <Pencil className="w-4 h-4 text-amber-400" />
@@ -113,7 +120,7 @@ export default function Screen4_RamenCustomization() {
           />
         </div>
 
-        {/* Floating Action Button Interface */}
+        {/* Navigation Action Button */}
         <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-[#111622] via-[#111622]/90 to-transparent pt-6 pb-6 px-4 flex justify-center z-30">
           <motion.button
             whileHover={{ scale: 1.03 }}
