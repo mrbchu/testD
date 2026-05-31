@@ -10,7 +10,7 @@ const ramenIngredients = [
   // 🍜 RAMEN BASES
   { id: "i1", name: "Plain Ramen Base", src: "/plain_ramen.jpg", type: "Ramen Base" },
   { id: "i2", name: "Spicy Ramen Base", src: "/spicy_ramen.jpg", type: "Ramen Base" },
-  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Topping" },
+  { id: "i3", name: "Cheese Ramen Base", src: "/cheese_ramen.jpg", type: "Ramen Bace" },
 
   // 🧀 TOPPINGS & SIDES
   { id: "i4", name: "Gochujang Paste", src: "/gochujang.jpg", type: "Topping" },
@@ -20,7 +20,7 @@ const ramenIngredients = [
   
   // 🥩 MEATS & PROTEINS
   { id: "i8", name: "Beef Slices", src: "/beef_slice.jpg", type: "Meat / Protein" },
-  { id: "i9", name: "Tender Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
+  { id: "i9", name: "Chicken", src: "/chicken.jpg", type: "Meat / Protein" },
   { id: "i10", name: "Juicy Porkchops", src: "/porkchops.jpg", type: "Meat / Protein" },
   { id: "i11", name: "Luncheon Meat", src: "/luncheon_meat.jpg", type: "Meat / Protein" },
   
